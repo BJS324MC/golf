@@ -3,13 +3,13 @@ class Golf {
     this.world = {};
     this.tileWidth = 50;
     this.classes = {
-      0: Grass,
-      1: Water,
-      2: Stone,
-      3: Sand,
-      4: Boost,
-      5: Spring,
-      6: Hole
+      0: new Grass(),
+      1: new Water(),
+      2: new Stone(),
+      3: new Sand(),
+      4: new Boost(),
+      5: new Spring(),
+      6: new Hole()
     }
   }
   createTile(x, y, v) {
@@ -20,7 +20,10 @@ class Golf {
     let tile = this.world[x];
     if(tile && typeof tile[y]!=="undefined")tile=tile[y];
     else return false;
-    let t = this.classes[tile] ? new this.classes[tile](x, y, this.tileWidth) : tile;
+    let t = this.classes[tile] ? this.classes[tile] : tile;
+    t.x=x;
+    t.y=y;
+    t.tileWidth=this.tileWidth;
     return t
   }
   drawTile(ctx, x, y) {
