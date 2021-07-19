@@ -95,7 +95,7 @@ function fill(x,y,w,h,v){
 let dragged = false,
   prevD = false,
   ev;
-let balls = [new Ball(0, 0, 145, 0, 200,10)];
+let balls = [new Ball(0, 0, 0, 0, 200,10)];
 balls[0].respawnable=true;
 //for (let i = 30; i < 40; i++)for (let j = 0; j < 20; j++) balls.push(new Ball(20 * (i + 1), 20 * (j) + 100, 0, 0, 1,10))
 var grd = ctx.createRadialGradient(innerWidth / 2, innerHeight / 2, Math.max(innerWidth, innerHeight),
