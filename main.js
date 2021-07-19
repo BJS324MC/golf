@@ -166,10 +166,10 @@ function loop() {
 addEventListener("touchstart", e => {
   dragged = true;
   ev = e
-},{passive:false});
+});
 addEventListener("touchmove", e => {
   dragged = true;
   ev = e
-},{passive:false});
+});
 addEventListener("touchend", e => dragged = false);
 loop();

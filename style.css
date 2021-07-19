@@ -3,3 +3,6 @@ body {
     margin:0; 
     position:fixed;
 }
+html,body{
+  overscroll-behavior-y: none
+}
