@@ -2,5 +2,4 @@ body {
     font-size: 15pt;
     margin:0; 
     position:fixed;
-    overscroll-behavior-y: contain
 }

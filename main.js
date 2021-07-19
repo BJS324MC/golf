@@ -164,14 +164,12 @@ function loop() {
   requestAnimationFrame(loop);
 }
 addEventListener("touchstart", e => {
-  e.preventDefault();
   dragged = true;
   ev = e
-});
+},{passive:false});
 addEventListener("touchmove", e => {
-  e.preventDefault();
   dragged = true;
   ev = e
-});
+},{passive:false});
 addEventListener("touchend", e => dragged = false);
 loop();
