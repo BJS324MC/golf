@@ -16,7 +16,6 @@ const SHOT_NAMES={
 };
 let cam=[0,0],
     track=cam.slice();
-
 let images=[
       "imgs/grass.jpeg",
       "imgs/water.jpeg",
