@@ -5,7 +5,7 @@ let canvas = document.getElementById("golf"),
   ctx = canvas.getContext("2d");
 canvas.width = globalWidth;
 canvas.height = globalHeight;
-var tw = 1998/(globalWidth+globalHeight),
+var tw = (globalWidth+globalHeight)/1998,
   cd=globalWidth<globalHeight;
 const SHOT_NAMES = {
   0: "PAR",
@@ -211,7 +211,7 @@ function loop() {
   ctx.font = "50px Bebas Neue";
   ctx.textAlign = "right";
   if(cd) ctx.fillText("Shots: "+shots,globalHeight*0.83,globalWidth*1.24);
-   ctx.fillText("Shots: " + shots, globalWidth - 10, globalHeight - 10);
+  else ctx.fillText("Shots: " + shots, globalWidth - 10, globalHeight - 10);
   animator.refresh();
   requestAnimationFrame(loop);
 }
