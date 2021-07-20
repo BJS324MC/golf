@@ -8,7 +8,7 @@ class Ball {
     this.angle = angle;
     this.speed = speed;
     this.espeed = 0;
-    this.fric = 0.05;
+    this.fric = 0.05*tw;
     this.radius = radius;
     this.rad = Math.PI / 180;
     this.deg = 180 / Math.PI;
@@ -58,14 +58,14 @@ class Ball {
     disY=px*(cd?-1:1);
     this.espeed = [disX * 2 * (cd?0.8368983957219251:1), disY * 2* (cd?0.8368983957219251:1)];
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
-    if (Math.abs(this.espeed[0]) + Math.abs(this.espeed[1]) < 50) {
-      ctx.strokeStyle = "rgba(255,0,0,0.5)";
-      this.espeed = [0, 0];
-    }
     ctx.beginPath();
     ctx.lineWidth = this.radius;
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(this.x + this.espeed[0], this.y + this.espeed[1]);
+    if (Math.abs(this.espeed[0]) + Math.abs(this.espeed[1]) < 50) {
+      ctx.strokeStyle = "rgba(255,0,0,0.5)";
+      this.espeed = [0, 0];
+    }
     ctx.stroke();
   }
   onDrop() {
@@ -115,7 +115,7 @@ class Ball {
     animator.addAnimation(x => {
       ctx.fillStyle = "yellow";
       ctx.textAlign = "center";
-      ctx.font = x + "px Bebas Neue";
+      ctx.font = (x*tw) + "px Bebas Neue";
       if(shots===1) return ctx.fillText("HOLE IN ONE", globalWidth / 2, globalHeight / 2);
       let s = shots - par;
       if (s > 3) s = 3;
@@ -136,7 +136,7 @@ class Ball {
   }
   collideTile() {
     if(this.falling)return;
-    this.fric = 0.05;
+    this.fric = 0.05*tw;
     let ab = this.polygon.getAABBAsBox(),
       cd = e => Math.floor((e + game.tileWidth / 2) / game.tileWidth),
       fg = h => Math.ceil((h + game.tileWidth / 2) / game.tileWidth),

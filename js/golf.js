@@ -1,7 +1,7 @@
 class Golf {
   constructor() {
     this.world = {};
-    this.tileWidth = 50;
+    this.tileWidth = 50*tw;
     this.classes = {
       0: new Grass(),
       1: new Water(),
@@ -37,7 +37,7 @@ class Golf {
   }
 }
 class Tile {
-  constructor(x, y, tileWidth = 50) {
+  constructor(x, y, tileWidth = 50*tw) {
     this.x = x;
     this.y = y;
     this.tileWidth = tileWidth;

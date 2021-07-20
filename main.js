@@ -135,7 +135,7 @@ function fill(x, y, w, h, v) {
 let dragged = false,
   prevD = false,
   ev;
-let balls = [new Ball(0, 0, 0, 0, 200, 10)];
+let balls = [new Ball(0, 0, 0, 0, 200, 10*tw)];
 balls[0].respawnable = true;
 var grd = ctx.createRadialGradient(globalWidth / 2, globalHeight / 2, Math.max(globalWidth, globalHeight),
   globalWidth / 2, globalHeight / 2, Math.min(globalWidth, globalHeight) / 4);
@@ -155,7 +155,7 @@ function loop() {
   track = [balls[0].x, balls[0].y];
   cam = [0.8 * cam[0] + 0.2 * track[0], 0.8 * cam[1] + 0.2 * track[1]];
   ctx.translate(globalWidth / 2 - cam[0], globalHeight / 2 - cam[1]);
-  ctx.scale(tw,tw)
+  //ctx.scale(tw,tw)
   if (count === images.length) game.drawAll(ctx);
   if (dragged) balls[0].onDrag(ev, ctx);
   else if (prevD) balls[0].onDrop();
@@ -208,7 +208,7 @@ function loop() {
   }
   ctx.restore();
   ctx.fillStyle = "white"
-  ctx.font = "50px Bebas Neue";
+  ctx.font = (50*tw)+"px Bebas Neue";
   ctx.textAlign = "right";
   if(cd) ctx.fillText("Shots: "+shots,globalHeight*0.83,globalWidth*1.24);
   else ctx.fillText("Shots: " + shots, globalWidth - 10, globalHeight - 10);
