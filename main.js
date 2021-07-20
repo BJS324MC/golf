@@ -1,10 +1,13 @@
-
 var globalWidth=outerWidth,
 globalHeight=outerHeight;
+//2.0090361446  0.4977511244
+let tmp=Math.min(globalWidth,globalHeight*2.0090361446);
+globalHeight=Math[(globalWidth<globalHeight)?"max":"min"](globalHeight,globalWidth*0.4977511244);
+globalWidth=tmp;
 let canvas = document.getElementById("golf"),
   ctx = canvas.getContext("2d");
-canvas.width = globalWidth;
-canvas.height = globalHeight;
+canvas.width = globalWidth+20;
+canvas.height = globalHeight+20;
 var tw = (globalWidth+globalHeight)/1998,
   cd=globalWidth<globalHeight;
 const SHOT_NAMES = {
@@ -36,7 +39,7 @@ let images = [
       "imgs/teleporter.png"
     ];
 var animator = new Animator();
-let lv = 0;
+let lv = 3;
 var levels = [
   () => {
     fill(-2, -4, 18, 6, 2)

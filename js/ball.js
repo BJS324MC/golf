@@ -8,7 +8,7 @@ class Ball {
     this.angle = angle;
     this.speed = speed;
     this.espeed = 0;
-    this.fric = 0.05*tw;
+    this.fric = 0.05;
     this.radius = radius;
     this.rad = Math.PI / 180;
     this.deg = 180 / Math.PI;
@@ -27,7 +27,7 @@ class Ball {
   move(spd = this.speed) {
     this.x += Math.cos(this.angle * this.rad) * spd;
     this.y += Math.sin(this.angle * this.rad) * spd;
-    if (this.speed > this.fric) this.speed -= this.fric;
+    if (this.speed > this.fric) this.speed -= this.fric*tw;
     else {
       this.speed = 0;
       if (!this.falling && this.canFall) {
@@ -51,12 +51,13 @@ class Ball {
     let ex = e.touches[0].clientX,
       ey = e.touches[0].clientY;
     let disX = globalWidth / 2 - ex,
-        disY = globalHeight / 2 - ey;
-    let mn = Math.min(globalWidth, globalHeight) / 4;
-    let px = Math.min(mn, Math.max(cd?disX:disY, -mn));
+        disY = globalHeight / 2 - ey,
+        mn = Math.min(globalWidth, globalHeight) / 4,
+        px = Math.min(mn, Math.max(cd?disX:disY, -mn)),
+        cf=cd?0.8368983957219251:1;
     disX = Math.min(mn, Math.max(cd?disY:disX, -mn));
     disY=px*(cd?-1:1);
-    this.espeed = [disX * 2 * (cd?0.8368983957219251:1), disY * 2* (cd?0.8368983957219251:1)];
+    this.espeed = [disX * 2 * cf, disY * 2 * cf];
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.beginPath();
     ctx.lineWidth = this.radius;
@@ -136,7 +137,7 @@ class Ball {
   }
   collideTile() {
     if(this.falling)return;
-    this.fric = 0.05*tw;
+    this.fric = 0.05;
     let ab = this.polygon.getAABBAsBox(),
       cd = e => Math.floor((e + game.tileWidth / 2) / game.tileWidth),
       fg = h => Math.ceil((h + game.tileWidth / 2) / game.tileWidth),
