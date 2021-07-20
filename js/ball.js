@@ -49,13 +49,14 @@ class Ball {
   onDrag(e, ctx) {
     if (this.speed > 0 || this.falling) return false;
     let ex = e.touches[0].clientX,
-      ey = e.touches[0].clientY,
-      disX = innerWidth / 2 - ex,
-      disY = innerHeight / 2 - ey;
-    let mn = Math.min(innerWidth, innerHeight) / 4;
-    disX = Math.min(mn, Math.max(disX, -mn));
-    disY = Math.min(mn, Math.max(disY, -mn));
-    this.espeed = [disX * 2, disY * 2];
+      ey = e.touches[0].clientY;
+    let disX = globalWidth / 2 - ex,
+        disY = globalHeight / 2 - ey;
+    let mn = Math.min(globalWidth, globalHeight) / 4;
+    let px = Math.min(mn, Math.max(cd?disX:disY, -mn));
+    disX = Math.min(mn, Math.max(cd?disY:disX, -mn));
+    disY=px*(cd?-1:1);
+    this.espeed = [disX * 2 * (cd?0.8368983957219251:1), disY * 2* (cd?0.8368983957219251:1)];
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     if (Math.abs(this.espeed[0]) + Math.abs(this.espeed[1]) < 50) {
       ctx.strokeStyle = "rgba(255,0,0,0.5)";
@@ -64,7 +65,7 @@ class Ball {
     ctx.beginPath();
     ctx.lineWidth = this.radius;
     ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.x + disX * 2, this.y + disY * 2);
+    ctx.lineTo(this.x + this.espeed[0], this.y + this.espeed[1]);
     ctx.stroke();
   }
   onDrop() {
@@ -72,6 +73,7 @@ class Ball {
       return false;
     this.speed = Math.hypot(...this.espeed) / 40;
     this.angle = Math.atan2(this.espeed[1], this.espeed[0]) * this.deg;
+    //if(maxs)maxs=this.speed>maxs?this.speed:maxs;
     shots++;
   }
   fallOff() {
@@ -114,11 +116,11 @@ class Ball {
       ctx.fillStyle = "yellow";
       ctx.textAlign = "center";
       ctx.font = x + "px Bebas Neue";
-      if(shots===1) return ctx.fillText("HOLE IN ONE", innerWidth / 2, innerHeight / 2);
+      if(shots===1) return ctx.fillText("HOLE IN ONE", globalWidth / 2, globalHeight / 2);
       let s = shots - par;
       if (s > 3) s = 3;
       else if (s < -3) s = -3;
-      ctx.fillText(SHOT_NAMES[s], innerWidth / 2, innerHeight / 2);
+      ctx.fillText(SHOT_NAMES[s], globalWidth / 2, globalHeight / 2);
     }, { 0: 0, 0.2: 100, 0.8: 100, 1: 0 }, 2000);
   }
   bounceUp(){
@@ -199,16 +201,16 @@ class Ball {
       this.x = this.radius;
       v[0] = -v[0];
     }
-    else if (this.x + this.radius >= innerWidth && v[0] > 0) {
-      this.x = innerWidth - this.radius;
+    else if (this.x + this.radius >= globalWidth && v[0] > 0) {
+      this.x = globalWidth - this.radius;
       v[0] = -v[0];
     }
     if (this.y <= this.radius && v[1] < 0) {
       this.y = this.radius;
       v[1] = -v[1];
     }
-    else if (this.y + this.radius >= innerHeight && v[1] > 0) {
-      this.y = innerHeight - this.radius;
+    else if (this.y + this.radius >= globalHeight && v[1] > 0) {
+      this.y = globalHeight - this.radius;
       v[1] = -v[1];
     }
     this.angle = Math.atan2(v[1], v[0]) * this.deg;
