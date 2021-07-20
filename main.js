@@ -38,7 +38,7 @@ let images = [
       "imgs/teleporter.png"
     ];
 var animator = new Animator();
-let lv = 3;
+let lv = 0;
 var levels = [
   () => {
     fill(-2, -4, 18, 6, 2)
