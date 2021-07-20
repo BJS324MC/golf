@@ -24,6 +24,7 @@ class Golf {
     t.x=x;
     t.y=y;
     t.tileWidth=this.tileWidth;
+    t.updatePolygon();
     return t
   }
   drawTile(ctx, x, y) {
@@ -47,6 +48,9 @@ class Tile {
   }
   action(ball){
     return ball;
+  }
+  updatePolygon(){
+    this.polygon = new SAT.Box(new SAT.Vector(this.x*this.tileWidth-this.tileWidth/2, this.y*this.tileWidth-this.tileWidth/2), this.tileWidth, this.tileWidth);
   }
 }
 class Start extends Tile {

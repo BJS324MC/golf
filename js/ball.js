@@ -68,7 +68,7 @@ class Ball {
     ctx.stroke();
   }
   onDrop() {
-    if (this.speed > 0 || this.espeed[0] === 0 || this.espeed[1] === 0)
+    if (this.speed > 0 || (this.espeed[0] === 0 && this.espeed[1] === 0))
       return false;
     this.speed = Math.hypot(...this.espeed) / 40;
     this.angle = Math.atan2(this.espeed[1], this.espeed[0]) * this.deg;
@@ -99,13 +99,16 @@ class Ball {
       f => {
         if (!this.respawnable) { return this.out = true };
         this.respawnX=0;
-        this.respawnY=0;
+        this.respawnY=lv===6?-25:0;
         this.x = this.respawnX;
         this.y = this.respawnY;
         this.radius = f[0];
         this.falling = false;
         this.speed = 0;
         shots=0;
+        game.world={};
+        lv++;
+        levels[lv]();
       });
     animator.addAnimation(x => {
       ctx.fillStyle = "yellow";
