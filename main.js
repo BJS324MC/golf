@@ -1,14 +1,14 @@
 var cd=outerWidth<outerHeight,
 globalWidth=outerWidth,
-globalHeight=outerHeight-100;
+globalHeight=outerHeight;
 let a=Math.min(globalWidth,globalHeight*(cd?0.6677796327:2.0090361446)),
 b=Math.min(globalHeight,globalWidth*(cd?1.4975:0.4977511244));
 globalWidth=a;
 globalHeight=b;//1334 664 1198 800
 let canvas = document.getElementById("golf"),
   ctx = canvas.getContext("2d");
-canvas.width = globalWidth;
-canvas.height = globalHeight;
+canvas.width = globalWidth*1.2;
+canvas.height = globalHeight*1.2;
 var tw = (globalWidth+globalHeight)/1998;
 const SHOT_NAMES = {
   0: "PAR",
