@@ -25,8 +25,8 @@ class Ball {
     ctx.fill();
   }
   move(spd = this.speed) {
-    this.x += Math.cos(this.angle * this.rad) * spd * tw;
-    this.y += Math.sin(this.angle * this.rad) * spd * tw;
+    this.x += Math.cos(this.angle * this.rad) * spd;
+    this.y += Math.sin(this.angle * this.rad) * spd;
     if (this.speed > this.fric) this.speed -= this.fric*tw;
     else {
       this.speed = 0;
@@ -63,7 +63,7 @@ class Ball {
     ctx.lineWidth = this.radius;
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(this.x + this.espeed[0], this.y + this.espeed[1]);
-    if (Math.abs(this.espeed[0]) + Math.abs(this.espeed[1]) < 50) {
+    if (Math.abs(this.espeed[0]) + Math.abs(this.espeed[1]) < 50*tw) {
       ctx.strokeStyle = "rgba(255,0,0,0.5)";
       this.espeed = [0, 0];
     }

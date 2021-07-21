@@ -1,15 +1,15 @@
-var globalWidth=outerWidth,
-globalHeight=outerHeight;
-let cdp=globalWidth>globalHeight,
-tmp=Math.max(globalWidth,globalHeight*(cdp?2.0090361446:0.4977511244));
-globalHeight=Math.min(globalHeight,globalWidth*(cdp?0.4977511244:2.0090361446));
-globalWidth=tmp;
+var cd=outerWidth<outerHeight,
+globalWidth=outerWidth,
+globalHeight=outerHeight-100;
+let a=Math.min(globalWidth,globalHeight*(cd?0.6677796327:2.0090361446)),
+b=Math.min(globalHeight,globalWidth*(cd?1.4975:0.4977511244));
+globalWidth=a;
+globalHeight=b;//1334 664 1198 800
 let canvas = document.getElementById("golf"),
   ctx = canvas.getContext("2d");
-canvas.width = globalWidth*1;
-canvas.height = globalHeight*1;
-var tw = (globalWidth+globalHeight)/1998,
-  cd=globalWidth<globalHeight;
+canvas.width = globalWidth;
+canvas.height = globalHeight;
+var tw = (globalWidth+globalHeight)/1998;
 const SHOT_NAMES = {
   0: "PAR",
   1: "BIRDIE",
@@ -218,13 +218,21 @@ function loop() {
   animator.refresh();
   requestAnimationFrame(loop);
 }
-addEventListener("touchstart", e => {
+canvas.addEventListener("touchstart", e => {
   dragged = true;
   ev = e
 });
-addEventListener("touchmove", e => {
+canvas.addEventListener("touchmove", e => {
   dragged = true;
   ev = e;
 });
-addEventListener("touchend", e => dragged = false);
+canvas.addEventListener("touchend", e => dragged = false);
 loop();
+/*
+Find w,h where w:h = 1:2.0090361446 and a+b=1998
+a=664
+b=1334
+
+globalWidth=(globalWidth+globalHeight)/(3.0090361446),
+globalHeight=globalWidth*2.0090361446;
+*/

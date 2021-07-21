@@ -183,7 +183,7 @@ class Boost extends Tile {
     this.image=images[4];
   }
   action(ball) {
-    ball.speed += 0.3;
+    ball.speed += 0.3*tw;
   }
   draw(ctx) {
     let pol = this.polygon;
