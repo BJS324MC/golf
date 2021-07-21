@@ -1,7 +1,7 @@
-var globalWidth=outerWidth,
-globalHeight=outerHeight;
-let tmp=Math.min(globalWidth,globalHeight*2.0090361446);
-globalHeight=Math[(globalWidth<globalHeight)?"max":"min"](globalHeight,globalWidth*0.4977511244);
+var globalWidth=360,
+globalHeight=630;
+let tmp=Math.min(globalWidth,globalHeight*(globalWidth>globalHeight?2.0090361446:0.4977511244));
+globalHeight=Math.min(globalHeight,globalWidth*(globalWidth>globalHeight?0.4977511244:2.0090361446));
 globalWidth=tmp;
 let canvas = document.getElementById("golf"),
   ctx = canvas.getContext("2d");
