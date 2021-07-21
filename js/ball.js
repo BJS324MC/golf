@@ -25,8 +25,8 @@ class Ball {
     ctx.fill();
   }
   move(spd = this.speed) {
-    this.x += Math.cos(this.angle * this.rad) * spd;
-    this.y += Math.sin(this.angle * this.rad) * spd;
+    this.x += Math.cos(this.angle * this.rad) * spd * tw;
+    this.y += Math.sin(this.angle * this.rad) * spd * tw;
     if (this.speed > this.fric) this.speed -= this.fric*tw;
     else {
       this.speed = 0;

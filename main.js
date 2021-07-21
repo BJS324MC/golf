@@ -1,12 +1,13 @@
 var globalWidth=outerWidth,
 globalHeight=outerHeight;
-let tmp=Math.min(globalWidth,globalHeight*(globalWidth>globalHeight?2.0090361446:0.4977511244));
-globalHeight=Math.min(globalHeight,globalWidth*(globalWidth>globalHeight?0.4977511244:2.0090361446));
+let cdp=globalWidth>globalHeight,
+tmp=Math.max(globalWidth,globalHeight*(cdp?2.0090361446:0.4977511244));
+globalHeight=Math.min(globalHeight,globalWidth*(cdp?0.4977511244:2.0090361446));
 globalWidth=tmp;
 let canvas = document.getElementById("golf"),
   ctx = canvas.getContext("2d");
-canvas.width = globalWidth*1.5;
-canvas.height = globalHeight*1.5;
+canvas.width = globalWidth*1;
+canvas.height = globalHeight*1;
 var tw = (globalWidth+globalHeight)/1998,
   cd=globalWidth<globalHeight;
 const SHOT_NAMES = {
