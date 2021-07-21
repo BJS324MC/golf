@@ -1,5 +1,5 @@
-var globalWidth=360,
-globalHeight=630;
+var globalWidth=outerWidth,
+globalHeight=outerHeight;
 let tmp=Math.min(globalWidth,globalHeight*(globalWidth>globalHeight?2.0090361446:0.4977511244));
 globalHeight=Math.min(globalHeight,globalWidth*(globalWidth>globalHeight?0.4977511244:2.0090361446));
 globalWidth=tmp;
