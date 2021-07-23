@@ -46,7 +46,7 @@ let images = [
       "imgs/lava.jpg"
     ];
 var animator = new Animator();
-let lv = 7;
+let lv = 0;
 var levels = [
   () => {
     fill(-2, -4, 18, 6, 2)
