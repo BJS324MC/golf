@@ -17,6 +17,9 @@ class Ball {
     this.falling = false;
     this.collided = false;
     this.canFall=true;
+    this.verified=false;
+    this.passed=true;
+    this.justFell=false;
   }
   draw(ctx) {
     ctx.beginPath();
@@ -46,10 +49,18 @@ class Ball {
     pos.x = this.x;
     pos.y = this.y;
   }
+  updateFollow(){
+    if(!this.verified && this.speed===0 && !this.justFell && !this.falling)following=false;
+    else {
+      following=true;
+      if(Math.abs(cam[0]-this.respawnX)<0.1 && Math.abs(cam[1]-this.respawnY)<0.1)this.justFell=false;
+    }
+    return [this.verified,this.speed,this.justFell]
+  }
   onDrag(e, ctx) {
     if (this.speed > 0 || this.falling) return false;
-    let ex = e.touches[0].clientX,
-      ey = e.touches[0].clientY;
+    let ex = e.clientX,
+      ey = e.clientY;
     let disX = globalWidth / 2 - ex,
         disY = globalHeight / 2 - ey,
         mn = Math.min(globalWidth, globalHeight) / 4,
@@ -57,7 +68,14 @@ class Ball {
         cf=cd?0.8368983957219251:1;
     disX = Math.min(mn, Math.max(cd?disY:disX, -mn));
     disY=px*(cd?-1:1);
+    if(!this.passed) return false;
+    if (!this.verified) {
+      if (Math.abs(disX) < mn/2 && Math.abs(disY) < mn/2) this.verified = true;
+      else return this.passed=false;
+    }
     this.espeed = [disX * 2 * cf, disY * 2 * cf];
+    /*ctx.fillStyle="rgba(0,0,0,0.3)";
+    ctx.fillRect(-mn,-mn,mn*2,mn*2)*/
     ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.beginPath();
     ctx.lineWidth = this.radius;
@@ -70,8 +88,10 @@ class Ball {
     ctx.stroke();
   }
   onDrop() {
-    if (this.speed > 0 || (this.espeed[0] === 0 && this.espeed[1] === 0))
-      return false;
+    this.passed=true;
+    if (this.speed > 0 || (this.espeed[0] === 0 && this.espeed[1] === 0) || !this.verified)
+      return this.verified=false;
+    this.verified=false;
     this.speed = Math.hypot(...this.espeed) / 40;
     this.angle = Math.atan2(this.espeed[1], this.espeed[0]) * this.deg;
     //if(maxs)maxs=this.speed>maxs?this.speed:maxs;
@@ -90,11 +110,8 @@ class Ball {
         this.speed = 0
       });
   }
-  fallIn() {
-    this.speed = 0;
-    this.fallOff();
-  }
   goInHole() {
+    this.justFell=true;
     if (this.falling) return false;
     this.falling = true;
     this.speed = 0;
@@ -102,7 +119,7 @@ class Ball {
       f => {
         if (!this.respawnable) { return this.out = true };
         this.respawnX=0;
-        this.respawnY=lv===6?-25:0;
+        this.respawnY=0;
         this.x = this.respawnX;
         this.y = this.respawnY;
         this.radius = f[0];
@@ -141,12 +158,13 @@ class Ball {
     let ab = this.polygon.getAABBAsBox(),
       cd = e => Math.floor((e + game.tileWidth / 2) / game.tileWidth),
       fg = h => Math.ceil((h + game.tileWidth / 2) / game.tileWidth),
+      k,
       l = false,
       m = false,
       n = true;
     for (let i = cd(ab.pos.x); i < fg(ab.pos.x + ab.w); i++)
       for (let j = cd(ab.pos.y); j < fg(ab.pos.y + ab.h); j++) {
-        let k = game.getTile(i, j);
+        k = game.getTile(i, j);
         if (k && !k.activated) {
           if (k.block) this.blockTile(k.polygon);
           if (!k.hole) n = false;
@@ -157,7 +175,7 @@ class Ball {
         };
       };
     if(!this.canFall)return this.bounceUp();
-    if (!l) m ? this.fallIn() : this.fallOff();
+    if (!l){this.justFell=true; m ? k.fallIn(this) : this.fallOff()}
     else if (n) this.goInHole();
   }
   blockTile(rect) {

@@ -9,8 +9,12 @@ class Golf {
       3: new Sand(),
       4: new Boost(),
       5: new Spring(),
-      6: new Hole()
+      6: new Hole(),
+      7: new Ice(),
+      8: new BlueIce(),
+      9: new Lava()
     }
+    this.frontLayer=[];
   }
   createTile(x, y, v) {
     if (!this.world[x]) this.world[x] = {};
@@ -34,6 +38,9 @@ class Golf {
   drawAll(ctx) {
     for (let i in this.world)
       for (let j in this.world[i]) this.drawTile(ctx, i, j);
+    while(this.frontLayer.length){
+      this.frontLayer.shift()();
+    }
   }
 }
 class Tile {
@@ -75,6 +82,33 @@ class Hole extends Tile {
     ctx.drawImage(this.image, this.x * this.tileWidth - pol.w / 2, this.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
   }
 };
+class InvisibleHole extends Hole{
+  constructor(x, y, tileWidth) {
+    super(x, y, tileWidth);
+    this.image = images[3];
+  }
+}
+class FakeHole extends Hole{
+  constructor(x, y, tileWidth) {
+    super(x, y, tileWidth);
+    this.hole = false;
+    this.fallable=true;
+  }
+  fallIn(ball) {
+    ball.speed = 0;
+    setTimeout(()=>{
+      ctx.fillStyle="rgba(255,255,255,0.5";
+      ctx.fillRect(-outerWidth,-outerHeight,outerWidth*3,outerHeight*3)
+    },1000)
+    setTimeout(()=>throwError(ctx, outerWidth/2-400, outerHeight/2-50, {
+      title: "Unable to connect",
+      width: 800,
+      height: 100,
+      message: "Your browser can't establish a connection to https://bjs324mc.github.io/golf. Refresh the page or try again later."
+    }),3000)
+    error=true;
+  }
+}
 class Grass extends Tile {
   constructor(x, y, tileWidth) {
     super(x, y, tileWidth);
@@ -95,6 +129,10 @@ class Water extends Tile {
     let pol = this.polygon;
     ctx.drawImage(this.image, this.x * this.tileWidth - pol.w / 2, this.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
   }
+  fallIn(ball) {
+    ball.speed = 0;
+    ball.fallOff();
+  }
 };
 class Stone extends Tile {
   constructor(x, y, tileWidth) {
@@ -113,20 +151,60 @@ class Wall extends Tile {
     this.block = true;
   }
 };
-class Arrow extends Tile {
-  constructor(x, y, tileWidth) {
+class Ice extends Tile{
+  constructor(x,y,tileWidth){
     super(x, y, tileWidth);
-    this.angle = 0;
+    this.image = images[8];
   }
   action(ball) {
-    
+    ball.fric=0.01;
+  }
+  draw(ctx) {
+    let pol = this.polygon;
+    ctx.drawImage(this.image, this.x * this.tileWidth - pol.w / 2, this.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
+  }
+}
+class BlueIce extends Tile {
+  constructor(x, y, tileWidth) {
+    super(x, y, tileWidth)
+    this.image = images[11];
+    this.block = true;
+  }
+  draw(ctx) {
+    let pol = this.polygon;
+    ctx.drawImage(this.image, this.x * this.tileWidth - pol.w / 2, this.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
+  }
+};
+class Arrow extends Tile {
+  constructor(x, y, tileWidth,angle=0) {
+    super(x, y, tileWidth);
+    this.angle = angle;
+    this.image=images[9];
+  }
+  action(ball) {
+    if(!ball.canFall)return 0;
+    let a=(ball.angle+360)%360,
+        b=(this.angle+270)%360,
+        c=(b-a+360)%360,
+        d=(a-b+360)%360,
+        v=c<=d?c:-d;
+    ball.angle += Math.abs(v)<20?v:v/20;
+    ball.speed=Math.max(ball.speed,1);
+  }
+  draw(ctx) {
+    let pol = this.polygon;
+    ctx.save();
+    ctx.translate(this.x * this.tileWidth,this.y * this.tileWidth);
+    ctx.rotate(this.angle*Math.PI/180);
+    ctx.drawImage(this.image,  - pol.w / 2,  - pol.h / 2, pol.w, pol.h);
+    ctx.restore();
   }
 };
 class Teleporter extends Tile{
   constructor(x, y, x2, y2, tileWidth) {
     super(x, y, tileWidth);
     this.des={x:x2,y:y2};
-    this.image=images[8];
+    this.image=images[10];
   }
   action(ball) {
     ball.x=this.des.x*this.tileWidth;
@@ -135,9 +213,37 @@ class Teleporter extends Tile{
   draw(){
     let pol = this.polygon;
     ctx.drawImage(this.image, this.x * this.tileWidth - pol.w / 2, this.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
-    ctx.drawImage(this.image, this.des.x * this.tileWidth - pol.w / 2, this.des.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
-    ctx.fillStyle = "rgba(255,255,0,0.5)";
-    ctx.fillRect(this.des.x * this.tileWidth - pol.w / 2, this.des.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
+    game.frontLayer.push(()=>{
+      ctx.globalAlpha = 0.5;
+      ctx.drawImage(this.image, this.des.x * this.tileWidth - pol.w / 2, this.des.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
+      ctx.fillStyle = "rgba(255,255,0,1)";
+      ctx.fillRect(this.des.x * this.tileWidth - pol.w / 2, this.des.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
+      ctx.globalAlpha = 1;
+    });
+  }
+}
+class Lava extends Tile{
+  constructor(x, y, tileWidth) {
+    super(x, y, tileWidth);
+    this.image = images[12];
+    this.fallable = true;
+  }
+  draw(ctx) {
+    let pol = this.polygon;
+    ctx.drawImage(this.image, this.x * this.tileWidth - pol.w / 2, this.y * this.tileWidth - pol.h / 2, pol.w, pol.h);
+  }
+  fallIn(ball){
+    ball.speed=0;
+    if (ball.falling || !ball.canFall) return false;
+    ball.falling = true;
+    animator.addAnimation(x => ball.radius = x, { 0: ball.radius, 1: 0 }, 500,
+      f => {
+        if (!ball.respawnable) { return ball.out = true };
+        ball.x = (ball.respawnX=0);
+        ball.y = (ball.respawnY=0);
+        ball.radius = f[0];
+        ball.falling = false;
+      });
   }
 }
 class Portal extends Tile{
