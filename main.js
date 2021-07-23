@@ -46,7 +46,7 @@ let images = [
       "imgs/lava.jpg"
     ];
 var animator = new Animator();
-let lv = 0;
+let lv = 3;
 var levels = [
   () => {
     fill(-2, -4, 18, 6, 2)
@@ -296,14 +296,14 @@ function loop() {
 canvas.addEventListener("touchstart", e => {
   dragged = true;
   ev = e.touches[0];
-  start = [ev.clientX+cam[0],ev.clientY+cam[1]];
+  start = cd?[ev.clientX-cam[1],ev.clientY+cam[0]]:[ev.clientX+cam[0],ev.clientY+cam[1]];
 });
 canvas.addEventListener("touchmove", e => {
   dragged = true;
   ev = e.touches[0];
-  if(!following){
-    cam[0]=start[0]-ev.clientX;
-    cam[1]=start[1]-ev.clientY;
+  if (!following) {
+    cam[0] = cd ? start[1]-ev.clientY : start[0] - ev.clientX;
+    cam[1] = cd ? ev.clientX - start[0] : start[1] - ev.clientY;
   };
 });
 canvas.addEventListener("touchend", e => dragged = false);
@@ -316,8 +316,8 @@ canvas.addEventListener('mousemove', e => {
   dragged = true;
   ev = e;
   if (!following) {
-    cam[0] = start[0] - ev.clientX;
-    cam[1] = start[1] - ev.clientY;
+    cam[0] = cd ? start[1] - ev.clientY : start[0] - ev.clientX;
+    cam[1] = cd ? ev.clientX - start[0] : start[1] - ev.clientY;
   };
 });
 canvas.addEventListener('mouseup', e => dragged = false);
