@@ -46,7 +46,7 @@ let images = [
       "imgs/lava.jpg"
     ];
 var animator = new Animator();
-let lv = 3;
+let lv = 0;
 var levels = [
   () => {
     fill(-2, -4, 18, 6, 2)
@@ -208,6 +208,7 @@ function fill2(x,y,w,h,f){
     for (let j = y; j < h; j++) game.createTile(i, j, f(i,j));
 }
 let dragged = false,
+  pressed=false,
   prevD = false,
   ev;
 let balls = [new Ball(0, 0, 0, 0, 200, 10 * tw)];
@@ -308,11 +309,13 @@ canvas.addEventListener("touchmove", e => {
 });
 canvas.addEventListener("touchend", e => dragged = false);
 canvas.addEventListener('mousedown', e => {
+  pressed=true;
   dragged = true;
   ev = e;
   start = [ev.clientX+cam[0],ev.clientY+cam[1]];
 });
 canvas.addEventListener('mousemove', e => {
+  if(!pressed)return false;
   dragged = true;
   ev = e;
   if (!following) {
@@ -320,7 +323,7 @@ canvas.addEventListener('mousemove', e => {
     cam[1] = cd ? ev.clientX - start[0] : start[1] - ev.clientY;
   };
 });
-canvas.addEventListener('mouseup', e => dragged = false);
+canvas.addEventListener('mouseup', e => {dragged = false;pressed=false;});
 loop();
 /*
 Find w,h where w:h = 1:2.0090361446 and a+b=1998
