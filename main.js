@@ -1,14 +1,14 @@
-var cd = outerWidth < outerHeight,
-  globalWidth = outerWidth,
-  globalHeight = outerHeight;
+var cd = innerWidth < innerHeight,
+  globalWidth = innerWidth,
+  globalHeight = innerHeight;
 let a = Math.min(globalWidth, globalHeight * (cd ? 0.6677796327 : 2.0090361446)),
   b = Math.min(globalHeight, globalWidth * (cd ? 1.4975 : 0.4977511244));
 globalWidth = a;
 globalHeight = b; //1334 664 1198 800
 let canvas = document.getElementById("golf"),
   ctx = canvas.getContext("2d");
-canvas.width = outerWidth;
-canvas.height = outerHeight;
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 var tw = (globalWidth + globalHeight) / 1998;
 const SHOT_NAMES = {
   0: "PAR",
@@ -289,7 +289,7 @@ function loop() {
   ctx.fillStyle = "white"
   ctx.font = (50 * tw) + "px Bebas Neue";
   ctx.textAlign = "right";
-  if (cd) ctx.fillText("Shots: " + shots, globalHeight * 0.83 + (outerHeight-globalHeight), globalWidth * 1.24);
+  if (cd) ctx.fillText("Shots: " + shots, globalHeight * 0.83 + (innerHeight-globalHeight), globalWidth * 1.24);
   else ctx.fillText("Shots: " + shots, globalWidth - 10, globalHeight - 10);
   animator.refresh();
   requestAnimationFrame(loop);
@@ -325,8 +325,7 @@ canvas.addEventListener('mousemove', e => {
 });
 canvas.addEventListener('mouseup', e => {dragged = false;pressed=false;});
 loop();
-/*
-Find w,h where w:h = 1:2.0090361446 and a+b=1998
+/*Find w,h where w:h = 1:2.0090361446 and a+b=1998
 a=664
 b=1334
 

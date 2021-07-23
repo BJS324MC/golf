@@ -98,9 +98,9 @@ class FakeHole extends Hole{
     ball.speed = 0;
     setTimeout(()=>{
       ctx.fillStyle="rgba(255,255,255,0.5";
-      ctx.fillRect(-outerWidth,-outerHeight,outerWidth*3,outerHeight*3)
+      ctx.fillRect(-innerWidth,-innerHeight,innerWidth*3,innerHeight*3)
     },1000)
-    setTimeout(()=>throwError(ctx, outerWidth/2-400, outerHeight/2-50, {
+    setTimeout(()=>throwError(ctx, innerWidth/2-400, innerHeight/2-50, {
       title: "Unable to connect",
       width: 800,
       height: 100,
