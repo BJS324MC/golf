@@ -94,7 +94,6 @@ class Ball {
     this.verified=false;
     this.speed = Math.hypot(...this.espeed) / 40;
     this.angle = Math.atan2(this.espeed[1], this.espeed[0]) * this.deg;
-    //if(maxs)maxs=this.speed>maxs?this.speed:maxs;
     shots++;
   }
   fallOff() {

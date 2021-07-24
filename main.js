@@ -21,7 +21,8 @@ const SHOT_NAMES = {
 };
 error=false;
 following=false;
-maxs = 0;
+ln=0;
+maxs = -1;
 count = 0;
 shots = 0;
 score = 0;
