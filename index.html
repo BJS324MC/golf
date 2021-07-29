@@ -14,10 +14,25 @@
 <body>
   <script src="js/SAT.js"></script>
   <canvas id="golf"></canvas>
+  <div id="tiles">
+    <div onclick='
+    balls[0].x=(balls[0].respawnX=0);
+    balls[0].y=(balls[0].respawnY=0);
+    shots=0;balls[0].justFell=true;' id="grass"></div>
+    <div onclick='
+    balls[0].x=(balls[0].respawnX=0);
+    balls[0].y=(balls[0].respawnY=0);
+    game.world={};levels[++lv%9]();' id="water"></div>
+    <div onclick="grid=!grid" id="sand"></div>
+    <div onclick="edit=!edit" id="boost"></div>
+    <div onclick="if(tl===9)tl=undefined;else if(tl==undefined)tl=0;else tl++;" id="spring"></div>
+  </div>
   <script src="js/error.js"></script>
   <script src="js/animator.js"></script>
   <script src="js/ball.js"></script>
   <script src="js/golf.js"></script>
+  <script src="js/levels.js"></script>
   <script src="main.js"></script>
+  <script src="js/ui.js"></script>
 </body>
 </html>

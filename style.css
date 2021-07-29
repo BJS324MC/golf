@@ -6,3 +6,32 @@ body {
 html,body{
   overscroll-behavior-y: none
 }
+#tiles{
+  box-sizing:border-box;
+  position: fixed;
+  top:80%;
+  left:10%;
+  width: 80%;
+  height:10%;
+  background: rgba(0,0,0,0.3);
+}
+#tiles > div{
+  display:inline-block;
+  width:10%;
+  height: 100%;
+}
+#grass{
+  background: red;
+}
+#water{
+  background: blue;
+}
+#sand {
+  background: green;
+}
+#boost {
+  background: white;
+}
+#spring{
+  background: yellow
+}

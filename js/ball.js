@@ -16,10 +16,11 @@ class Ball {
     this.mass = mass;
     this.falling = false;
     this.collided = false;
-    this.canFall=true;
-    this.verified=false;
-    this.passed=true;
-    this.justFell=false;
+    this.canFall = true;
+    this.verified = false;
+    this.passed = true;
+    this.justFell = false;
+    this.count = 0;
   }
   draw(ctx) {
     ctx.beginPath();
@@ -30,12 +31,17 @@ class Ball {
   move(spd = this.speed) {
     this.x += Math.cos(this.angle * this.rad) * spd;
     this.y += Math.sin(this.angle * this.rad) * spd;
-    if (this.speed > this.fric) this.speed -= this.fric*tw;
+    if (this.speed > this.fric) this.speed -= this.fric * tw;
     else {
+      if (!this.falling && this.canFall && this.count === 10) {
+        this.respawnX = this.x;
+        this.respawnY = this.y;
+        this.count = 0;
+        return;
+      }
       this.speed = 0;
       if (!this.falling && this.canFall) {
-        this.respawnX = this.x;
-        this.respawnY = this.y
+        this.count++;
       }
     };
     this.updatePolygon();
@@ -49,29 +55,28 @@ class Ball {
     pos.x = this.x;
     pos.y = this.y;
   }
-  updateFollow(){
-    if(!this.verified && this.speed===0 && !this.justFell && !this.falling)following=false;
+  updateFollow() {
+    if (!this.verified && this.speed === 0 && !this.justFell && !this.falling) following = false;
     else {
-      following=true;
-      if(Math.abs(cam[0]-this.respawnX)<0.1 && Math.abs(cam[1]-this.respawnY)<0.1)this.justFell=false;
+      following = true;
+      if (Math.abs(cam[0] - this.respawnX) < 0.1 && Math.abs(cam[1] - this.respawnY) < 0.1) this.justFell = false;
     }
-    return [this.verified,this.speed,this.justFell]
   }
   onDrag(e, ctx) {
     if (this.speed > 0 || this.falling) return false;
     let ex = e.clientX,
       ey = e.clientY;
     let disX = globalWidth / 2 - ex,
-        disY = globalHeight / 2 - ey,
-        mn = Math.min(globalWidth, globalHeight) / 4,
-        px = Math.min(mn, Math.max(cd?disX:disY, -mn)),
-        cf=cd?0.8368983957219251:1;
-    disX = Math.min(mn, Math.max(cd?disY:disX, -mn));
-    disY=px*(cd?-1:1);
-    if(!this.passed) return false;
+      disY = globalHeight / 2 - ey,
+      mn = Math.min(globalWidth, globalHeight) / 4,
+      px = Math.min(mn, Math.max(cd ? disX : disY, -mn)),
+      cf = cd ? 0.8368983957219251 : 1;
+    disX = Math.min(mn, Math.max(cd ? disY : disX, -mn));
+    disY = px * (cd ? -1 : 1);
+    if (!this.passed) return false;
     if (!this.verified) {
-      if (Math.abs(disX) < mn/2 && Math.abs(disY) < mn/2) this.verified = true;
-      else return this.passed=false;
+      if (Math.abs(disX) < mn / 2 && Math.abs(disY) < mn / 2) this.verified = true;
+      else return this.passed = false;
     }
     this.espeed = [disX * 2 * cf, disY * 2 * cf];
     /*ctx.fillStyle="rgba(0,0,0,0.3)";
@@ -81,17 +86,18 @@ class Ball {
     ctx.lineWidth = this.radius;
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(this.x + this.espeed[0], this.y + this.espeed[1]);
-    if (Math.abs(this.espeed[0]) + Math.abs(this.espeed[1]) < 50*tw) {
+    if (Math.abs(this.espeed[0]) + Math.abs(this.espeed[1]) < 50 * tw) {
       ctx.strokeStyle = "rgba(255,0,0,0.5)";
       this.espeed = [0, 0];
     }
     ctx.stroke();
+    ctx.lineWidth=1;
   }
   onDrop() {
-    this.passed=true;
+    this.passed = true;
     if (this.speed > 0 || (this.espeed[0] === 0 && this.espeed[1] === 0) || !this.verified)
-      return this.verified=false;
-    this.verified=false;
+      return this.verified = false;
+    this.verified = false;
     this.speed = Math.hypot(...this.espeed) / 40;
     this.angle = Math.atan2(this.espeed[1], this.espeed[0]) * this.deg;
     shots++;
@@ -110,40 +116,40 @@ class Ball {
       });
   }
   goInHole() {
-    this.justFell=true;
+    this.justFell = true;
     if (this.falling) return false;
     this.falling = true;
     this.speed = 0;
-    animator.addAnimation(x => {this.radius = x}, { 0: this.radius, 0.2: 0 , 1:0}, 2000,
+    animator.addAnimation(x => { this.radius = x }, { 0: this.radius, 0.2: 0, 1: 0 }, 2000,
       f => {
         if (!this.respawnable) { return this.out = true };
-        this.respawnX=0;
-        this.respawnY=0;
+        this.respawnX = 0;
+        this.respawnY = 0;
         this.x = this.respawnX;
         this.y = this.respawnY;
         this.radius = f[0];
         this.falling = false;
         this.speed = 0;
-        shots=0;
-        game.world={};
-        lv++;
-        levels[lv]();
+        shots = 0;
+        //game.world={};
+        //lv++;
+        //levels[lv]();
       });
     animator.addAnimation(x => {
       ctx.fillStyle = "yellow";
       ctx.textAlign = "center";
-      ctx.font = (x*tw) + "px Bebas Neue";
-      if(shots===1) return ctx.fillText("HOLE IN ONE", globalWidth / 2, globalHeight / 2);
+      ctx.font = (x * tw) + "px Bebas Neue";
+      if (shots === 1) return ctx.fillText("HOLE IN ONE", globalWidth / 2, globalHeight / 2);
       let s = shots - par;
       if (s > 3) s = 3;
       else if (s < -3) s = -3;
       ctx.fillText(SHOT_NAMES[s], globalWidth / 2, globalHeight / 2);
     }, { 0: 0, 0.2: 100, 0.8: 100, 1: 0 }, 2000);
   }
-  bounceUp(){
-    if(!this.onAir)animator.addAnimation(x=>this.radius=x,
-    {0:this.radius,0.1:this.radius*1.8,0.7:this.radius*1.3,1:this.radius},1000,f=>{this.canFall=true;this.onAir=false});
-    this.onAir=true;
+  bounceUp() {
+    if (!this.onAir) animator.addAnimation(x => this.radius = x, { 0: this.radius, 0.1: this.radius * 1.8, 0.7: this.radius * 1.3, 1: this.radius }, 1000, f => { this.canFall = true;
+      this.onAir = false });
+    this.onAir = true;
   }
   vecMul(b, v) {
     return v.map(a => b * a);
@@ -152,7 +158,7 @@ class Ball {
     return a.map((e, i) => b[i] + e);
   }
   collideTile() {
-    if(this.falling)return;
+    if (this.falling) return;
     this.fric = 0.05;
     let ab = this.polygon.getAABBAsBox(),
       cd = e => Math.floor((e + game.tileWidth / 2) / game.tileWidth),
@@ -173,8 +179,9 @@ class Ball {
           else m = true;
         };
       };
-    if(!this.canFall)return this.bounceUp();
-    if (!l){this.justFell=true; m ? k.fallIn(this) : this.fallOff()}
+    if (!this.canFall) return this.bounceUp();
+    if (!l) { this.justFell = true;
+      m ? k.fallIn(this) : this.fallOff() }
     else if (n) this.goInHole();
   }
   blockTile(rect) {
