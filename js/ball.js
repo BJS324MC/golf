@@ -131,9 +131,9 @@ class Ball {
         this.falling = false;
         this.speed = 0;
         shots = 0;
-        //game.world={};
-        //lv++;
-        //levels[lv]();
+        game.world={};
+        lv++;
+        levels[lv]();
       });
     animator.addAnimation(x => {
       ctx.fillStyle = "yellow";

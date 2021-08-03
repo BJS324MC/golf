@@ -1,6 +1,8 @@
 var cd = innerWidth < innerHeight,
   globalWidth = innerWidth,
   globalHeight = innerHeight,
+  alternateWidth = cd?innerHeight:innerWidth,
+  alternateHeight = cd?innerWidth:innerHeight,
   b = Math.min(globalHeight, globalWidth * (cd ? 1.4975 : 0.4977511244));
 globalWidth = Math.min(globalWidth, globalHeight * (cd ? 0.6677796327 : 2.0090361446));
 globalHeight = b;
@@ -24,7 +26,7 @@ var tw = (globalWidth + globalHeight) / 1998,
   cam = [0, 0],
   track = cam.slice(),
   animator = new Animator(),
-  grid=true,
+  grid=false,
   error = false,
   following = false,
   lv = 0,
@@ -54,8 +56,8 @@ images.forEach((a, i) => {
     if (count === images.length) {
       game = new Golf();
       //bt=new Button(0,0,images[1],0.05);
-      //levels[lv]();
-      fill(-1,-1,2,2,0)
+      levels[lv]();
+      //fill(-1,-1,2,2,0)
     };
   };
   images[i].src = src;
@@ -71,7 +73,7 @@ function fill2(x, y, w, h, f) {
     for (let j = y; j < h; j++) game.createTile(i, j, f(i, j));
 }
 let dragged = false,
-  edit=true,
+  edit=false,
   pressed = false,
   prevD = false,
   balls = [new Ball(0, 0, 0, 0, 200, 10 * tw)];
@@ -180,8 +182,8 @@ function loop() {
 
 canvas.addEventListener("touchstart", e => {
   if (edit) {
-    let x = Math.round((-globalWidth / 2 + (cd?-cam[1]:cam[0]) + e.touches[0].clientX) / 50),
-      y = Math.round((-globalHeight / 2 + (cd?cam[0]:cam[1]) + e.touches[0].clientY) / 50);
+    let x = Math.floor((e.touches[0].clientX - alternateWidth / 2 + (cd?-cam[1]:cam[0])) / 50+0.5),
+      y = Math.floor((e.touches[0].clientY - alternateHeight / 2 + (cd?cam[0]:cam[1])) / 50+0.5);
     return game.createTile(cd ? y : x, cd ? -x : y, tl);
   }
   dragged = true;
@@ -191,8 +193,8 @@ canvas.addEventListener("touchstart", e => {
 //1 0 0 1
 canvas.addEventListener("touchmove", e => {
   if(edit){
-    let x = Math.round((-globalWidth / 2 + (cd?-cam[1]:cam[0]) + e.touches[0].clientX) / 50),
-      y = Math.round((-globalHeight / 2 + (cd?cam[0]:cam[1]) + e.touches[0].clientY) / 50);
+    let x = Math.floor((e.touches[0].clientX - alternateWidth / 2 + (cd?-cam[1]:cam[0])) / 50+0.5),
+      y = Math.floor((e.touches[0].clientY - alternateHeight / 2 + (cd?cam[0]:cam[1])) / 50+0.5);
     return game.createTile(cd?y:x,cd?-x:y,tl);
   }
   dragged = true;
@@ -206,8 +208,8 @@ canvas.addEventListener("touchend", e => dragged = false);
 canvas.addEventListener('mousedown', e => {
   pressed = true;
   if (edit) {
-    let x = Math.round((-globalWidth / 2 + (cd ? -cam[1] : cam[0]) + e.clientX) / 50),
-      y = Math.round((-globalHeight / 2 + (cd ? cam[0] : cam[1]) + e.clientY) / 50);
+    let x = Math.floor((e.clientX - alternateWidth / 2 + (cd ? -cam[1] : cam[0])) / 50+0.5),
+      y = Math.floor((e.clientY - alternateHeight / 2 + (cd ? cam[0] : cam[1])) / 50+0.5);
     return game.createTile(cd ? y : x, cd ? -x : y, tl);
   }
   dragged = true;
@@ -217,8 +219,8 @@ canvas.addEventListener('mousedown', e => {
 canvas.addEventListener('mousemove', e => {
   if (!pressed) return false;
   if (edit) {
-    let x = Math.round((-globalWidth / 2 + (cd ? -cam[1] : cam[0]) + e.clientX) / 50),
-      y = Math.round((-globalHeight / 2 + (cd ? cam[0] : cam[1]) + e.clientY) / 50);
+    let x = Math.floor((e.clientX - alternateWidth / 2 + (cd ? -cam[1] : cam[0])) / 50+0.5),
+      y = Math.floor((e.clientY - alternateHeight / 2 + (cd ? cam[0] : cam[1])) / 50+0.5);
     return game.createTile(cd ? y : x, cd ? -x : y, tl);
   }
   dragged = true;
